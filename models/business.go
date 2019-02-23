@@ -4,7 +4,7 @@ type Business struct {
 
 }
 
-func (b *Business) CreateBusiness () {
+func (b *Business) StoreBusiness () {
 	// todo
 }
 

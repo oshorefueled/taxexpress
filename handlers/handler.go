@@ -11,6 +11,7 @@ func InitHandlers (route *chi.Mux) {
 		w.Write([]byte("Welcome to TaxExpress"))
 	})
 	route.Route("/auth", authRoute)
+	route.Route("/business", businessRoute)
 }
 
 type handlerHelper struct {
