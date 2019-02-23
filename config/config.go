@@ -2,7 +2,10 @@ package config
 
 import "strconv"
 
-var Port = 3000
+var (
+	AdminKey = "123456789"
+	Port = 3000
+)
 
 func PortToServe () string {
 	return ":" + strconv.Itoa(Port)
