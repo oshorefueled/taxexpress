@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"github.com/go-chi/chi"
 	"github.com/oshorefueled/taxexpress/models"
@@ -16,7 +15,6 @@ type authHandler struct {
 
 func authRoute (r chi.Router) {
 	h := authHandler{}
-	r.Get("/register", h.authView)
 	r.Post("/login", h.login)
 	r.Post("/register", h.register)
 }
@@ -78,14 +76,6 @@ func generateToken (email string) string {
 		log.Fatal(err)
 	}
 	return string(hash)
-}
-
-func tokenFromHash (hash string) string {
-	return base64.StdEncoding.EncodeToString([]byte(hash))
-}
-
-func hashPassword () {
-	// todo
 }
 
 func hashAndSalt(pwd []byte) string {
