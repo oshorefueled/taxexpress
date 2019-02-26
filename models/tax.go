@@ -64,6 +64,34 @@ func (t Tax) GetAllPaidTaxes () ([]map[string]interface{}, error) {
 	return taxArray, err
 }
 
+func (t Tax) GetAllUnPaidTaxes () ([]map[string]interface{}, error) {
+	var b Business
+	var businessId int
+	var revenue float64
+	var datePaid string
+	sqlQuery := "SELECT business_id, revenue, date_paid FROM tax WHERE tax_paid=0"
+	results, err := db.Query(sqlQuery)
+	if err != nil {
+		return []map[string]interface{}{}, err
+	}
+	var taxArray []map[string]interface{}
+	for results.Next() {
+		err = results.Scan(&businessId, &revenue, &datePaid)
+		b.Id = businessId
+		err := b.GetBusinessById()
+		if err != nil {
+			return taxArray, err
+		}
+		taxArray = append(taxArray, map[string]interface{}{
+			"business_id": businessId,
+			"revenue": revenue,
+			"date_paid": datePaid,
+			"business": b,
+		})
+	}
+	return taxArray, err
+}
+
 func (t *Tax) GetTaxByDateAndId () (err error) {
 	fmt.Println("tax period", t.TaxPeriod)
 	sqlQuery := "SELECT * FROM tax WHERE business_id=? AND tax_period=?"
@@ -73,8 +101,25 @@ func (t *Tax) GetTaxByDateAndId () (err error) {
 	return
 }
 
+func (t Tax) GetBusinessTaxRecord () ([]Tax, error) {
+	fmt.Println("tax period", t.TaxPeriod)
+	sqlQuery := "SELECT * FROM tax WHERE business_id=?"
+	results, err := db.Query(sqlQuery, t.BusinessId)
+	if err != nil {
+		return []Tax{}, err
+	}
+	var records []Tax
+	for results.Next() {
+		err = results.Scan(&t.Id, &t.BusinessId, &t.TaxPeriod, &t.Revenue,
+			&t.TaxPaid, &t.DatePaid, &t.CreatedAt, &t.UpdateAt)
+		records = append(records, t)
+	}
+	return records, err
+}
+
 func (t *Tax) UpdateTaxPayment () (err error) {
-	stmt, err := db.Prepare("Update tax set date_paid=?, tax_paid=?, updated_at=NOW() where business_id=? AND tax_period=?")
+	stmt, err := db.Prepare("Update tax set date_paid=?, tax_paid=?, " +
+		"updated_at=NOW() where business_id=? AND tax_period=?")
 	defer closeStmt(stmt)
 	if err != nil {
 		return err
