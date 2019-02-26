@@ -12,11 +12,11 @@ type Admin struct {
 	Token string `json: "token"`
 }
 
-const tableName  = "admins"
+const adminTableName  = "admins"
 
 func (a *Admin) CreateAdminUser () (int64, int64, error) {
 	sqlQuery := fmt.Sprintf("INSERT %s SET username = ?, password = ?, email = ?, " +
-		"token = ?, created_at = NOW(), updated_at = NOW()", tableName)
+		"token = ?, created_at = NOW(), updated_at = NOW()", adminTableName)
 	stmt, err := db.Prepare(sqlQuery)
 	defer closeStmt(stmt)
 	if err != nil {
