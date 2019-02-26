@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/oshorefueled/taxexpress/models"
 	"net/http"
@@ -23,7 +22,6 @@ func businessRoute (r chi.Router) {
 func (h *businessHandler) createBusiness (w http.ResponseWriter, r *http.Request) {
 	var business models.Business
 	_ = json.NewDecoder(r.Body).Decode(&business)
-	fmt.Println(business)
 	_, _, err := business.StoreBusiness()
 	if err != nil {
 		h.RespondWithError(w, 400, err.Error())

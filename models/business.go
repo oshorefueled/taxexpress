@@ -10,10 +10,10 @@ type Business struct {
 	RCNumber *int `json:"rc_number"`
 	BusinessDescription string `json:"business_desc"`
 	Email string `json:"email"`
-	TotalRevenue *float32 `json:"total_revenue"`
+	TotalRevenue float64 `json:"total_revenue"`
 	TaxStatus *int `json:"tax_status"`
-	CreatedAt *string
-	UpdateAt string
+	CreatedAt *string `json:"created_at"`
+	UpdateAt *string  `json:"updated_at"`
 }
 
 const businessTableName = "businesses"
@@ -22,7 +22,6 @@ func (b *Business) StoreBusiness () (int64, int64, error) {
 	sqlQuery := fmt.Sprintf("INSERT %s SET name = ?, rc_number = ?, business_desc = ?, " +
 		"email = ?, total_revenue = ?, tax_status = ?, created_at = NOW(), updated_at = NOW()", businessTableName)
 	stmt, err := db.Prepare(sqlQuery)
-	fmt.Println(err)
 	defer closeStmt(stmt)
 	if err != nil {
 		return 0, 0, err
@@ -67,18 +66,18 @@ func (b *Business) GetBusinessById () (err error) {
 	return
 }
 
-func (b *Business) UpdateBusiness () {
-	// todo
+func (b *Business) UpdateBusinessRevenue (revenue float64) (err error) {
+	err = b.GetBusinessById()
+	if err != nil {
+		return err
+	}
+	stmt, err := db.Prepare("Update businesses set total_revenue=?, updated_at=NOW() where id=?")
+	defer closeStmt(stmt)
+	if err != nil {
+		return err
+	}
+	updatedRevenue := revenue + b.TotalRevenue
+	_, err = stmt.Exec(updatedRevenue, b.Id)
+	return
 }
 
-func (b *Business) IsBusinessCompliant () {
-	// todo
-}
-
-func (b *Business) ListCompliantBusinesses () {
-	// todo
-}
-
-func (b *Business) ListNonCompliantBusinesses () {
-	// todo
-}

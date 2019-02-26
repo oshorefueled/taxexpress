@@ -12,6 +12,7 @@ func InitHandlers (route *chi.Mux) {
 	})
 	route.Route("/auth", authRoute)
 	route.Route("/business", businessRoute)
+	route.Route("/tax", taxRoute)
 }
 
 type handlerHelper struct {
