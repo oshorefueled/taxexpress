@@ -37,6 +37,7 @@ func (t *Tax) SaveBusinessRevenue () error {
 }
 
 func (t Tax) GetAllPaidTaxes () ([]map[string]interface{}, error) {
+	var b Business
 	var businessId int
 	var revenue float64
 	var datePaid string
@@ -48,10 +49,16 @@ func (t Tax) GetAllPaidTaxes () ([]map[string]interface{}, error) {
 	var taxArray []map[string]interface{}
 	for results.Next() {
 		err = results.Scan(&businessId, &revenue, &datePaid)
+		b.Id = businessId
+		err := b.GetBusinessById()
+		if err != nil {
+			return taxArray, err
+		}
 		taxArray = append(taxArray, map[string]interface{}{
 			"business_id": businessId,
 			"revenue": revenue,
 			"date_paid": datePaid,
+			"business": b,
 		})
 	}
 	return taxArray, err
