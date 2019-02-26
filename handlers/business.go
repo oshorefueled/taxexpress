@@ -15,7 +15,7 @@ type businessHandler struct {
 func businessRoute (r chi.Router) {
 	b := businessHandler{}
 	r.Post("/create", b.createBusiness)
-	r.Get("/all", b.getBusinesses)
+	r.Get("/all", b.getAllBusinesses)
 	r.Get("/", b.getBusiness)
 }
 
@@ -35,7 +35,7 @@ func (h *businessHandler) createBusiness (w http.ResponseWriter, r *http.Request
 	}
 }
 
-func (h *businessHandler) getBusinesses (w http.ResponseWriter, r *http.Request) {
+func (h *businessHandler) getAllBusinesses (w http.ResponseWriter, r *http.Request) {
 	b := models.Business{}
 	businesses, err := b.GetAllBusinesses()
 	if err != nil {

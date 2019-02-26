@@ -26,7 +26,7 @@ func (h handlerHelper) catch(err error) {
 }
 
 func (h handlerHelper) RespondWithError(w http.ResponseWriter, code int, msg string) {
-	h.RespondWithJSON(w, code, map[string]string{"message": msg})
+	h.RespondWithJSON(w, code, map[string]string{"status": "error", "message": msg})
 }
 
 func (h handlerHelper) RespondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
