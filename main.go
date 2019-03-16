@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 	"github.com/oshorefueled/taxexpress/config"
 	"github.com/oshorefueled/taxexpress/handlers"
 	"github.com/oshorefueled/taxexpress/models"
@@ -13,6 +14,15 @@ import (
 func main () {
 	fmt.Println("Initiating TaxExpress Server...")
 	r := chi.NewRouter()
+	_cors := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: true,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	})
+	r.Use(_cors.Handler)
 	handlers.InitHandlers(r)
 	models.InitializeDB()
 	server := createCustomServer(r)

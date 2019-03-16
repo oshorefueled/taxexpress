@@ -18,6 +18,7 @@ func taxRoute (r chi.Router) {
 	r.Post("/payment", t.updateTaxPayment)
 	r.Get("/paid", t.getAllPaidTaxes)
 	r.Get("/record", t.getBusinessTaxRecord)
+	r.Get("/detail", t.getTaxById)
 	r.Get("/unpaid", t.getAllUnPaidTaxes)
 	r.Get("/date", t.getData)
 }
@@ -28,6 +29,22 @@ func (h *taxHandler) getBusinessTaxRecord (w http.ResponseWriter, r *http.Reques
 		BusinessId:businessId,
 	}
 	records, err := t.GetBusinessTaxRecord()
+	if err != nil {
+		h.RespondWithError(w, 400, err.Error())
+	} else {
+		h.RespondWithJSON(w, 200, map[string]interface{}{
+			"status": "success",
+			"data": records,
+		})
+	}
+}
+
+func (h *taxHandler) getTaxById (w http.ResponseWriter, r *http.Request) {
+	taxId, _ := strconv.Atoi(r.URL.Query().Get("id"))
+	t := models.Tax{
+		Id: taxId,
+	}
+	records, err := t.GetTaxRecordById()
 	if err != nil {
 		h.RespondWithError(w, 400, err.Error())
 	} else {
