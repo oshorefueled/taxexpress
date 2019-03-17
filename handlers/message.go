@@ -13,7 +13,8 @@ type messageHandler struct {
 
 func messageRoute (r chi.Router) {
 	m := messageHandler{}
-	r.Post("/create", m.createMessage)
+	r.Post("/", m.createMessage)
+	r.Get("/", m.getAllMessages)
 }
 
 func (h *messageHandler) createMessage (w http.ResponseWriter, r *http.Request) {
@@ -37,5 +38,14 @@ func (h *messageHandler) createMessage (w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *messageHandler) getAllMessages (w http.ResponseWriter, r *http.Request) {
-
+	m := models.Message{}
+	messages, err := m.GetAllMessages()
+	if err != nil {
+		h.RespondWithError(w, 400, err.Error())
+	} else {
+		h.RespondWithJSON(w, 200, map[string]interface{}{
+			"status": "success",
+			"data": messages,
+		})
+	}
 }

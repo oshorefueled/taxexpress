@@ -4,8 +4,8 @@ import "fmt"
 
 type Message struct {
 	Id int `json:"id"`
-	Type  string `json:"type"`
 	Message  string `json:"message"`
+	Type  string `json:"type"`
 	CreatedAt *string `json:"created_at"`
 	UpdateAt *string  `json:"updated_at"`
 }
@@ -30,4 +30,21 @@ func (m *Message) CreateMessage () (int64, int64, error) {
 	}
 	lastInsertedId, err := res.LastInsertId()
 	return affectedRows, lastInsertedId, err
+}
+
+func (m Message) GetAllMessages () ([]Message, error) {
+	sqlQuery := "SELECT * FROM messages"
+	results, err := db.Query(sqlQuery)
+	if err != nil {
+		return []Message{}, err
+	}
+	var messages []Message
+	for results.Next() {
+		err = results.Scan(&m.Id, &m.Message, &m.Type, &m.CreatedAt, &m.UpdateAt)
+		if err != nil {
+			return []Message{}, err
+		}
+		messages = append(messages, m)
+	}
+	return messages, err
 }
