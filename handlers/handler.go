@@ -14,6 +14,7 @@ func InitHandlers (route *chi.Mux) {
 	route.Route("/business", businessRoute)
 	route.Route("/tax", taxRoute)
 	route.Route("/message", messageRoute)
+	route.Route("/admin", adminRoute)
 }
 
 type handlerHelper struct {

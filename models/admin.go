@@ -6,10 +6,13 @@ import (
 )
 
 type Admin struct {
-	Username  string `json: "username"`
-	Password string `json: "password"`
-	Email string `json: "email"`
-	Token string `json: "token"`
+	Id string `json:"id"`
+	Username  string `json:"username"`
+	Password string `json:"password"`
+	Email string `json:"email"`
+	Token string `json:"token"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 const adminTableName  = "admins"
@@ -50,5 +53,29 @@ func (a *Admin) GetAdminUser () (err error) {
 		}
 	}
 	return
+}
+
+func (a Admin) GetAllAdminUsers () ([]interface{}, error) {
+	sqlQuery := "SELECT * FROM admins"
+	results, err := db.Query(sqlQuery)
+	if err != nil {
+		return []interface{}{}, err
+	}
+	var admins []interface{}
+	for results.Next() {
+		err = results.Scan(&a.Id, &a.Username, &a.Email, &a.Token, &a.Password, &a.CreatedAt, &a.UpdatedAt)
+		if err != nil {
+			return []interface{}{}, err
+		}
+		data := map[string]interface{}{
+			"id": a.Id,
+			"username": a.Username,
+			"email": a.Email,
+			"created_at": a.CreatedAt,
+			"updated_at": a.UpdatedAt,
+		}
+		admins = append(admins, data)
+	}
+	return admins, err
 }
 
