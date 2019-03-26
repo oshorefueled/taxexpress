@@ -13,6 +13,7 @@ type businessHandler struct {
 }
 
 func businessRoute (r chi.Router) {
+	r.Use(needTokenMiddleware)
 	b := businessHandler{}
 	r.Post("/create", b.createBusiness)
 	r.Get("/all", b.getAllBusinesses)
@@ -26,10 +27,12 @@ func (h *businessHandler) createBusiness (w http.ResponseWriter, r *http.Request
 	if err != nil {
 		h.RespondWithError(w, 400, err.Error())
 	} else {
+		_ = business.GetBusinessByEmail()
 		h.RespondWithJSON(w, 200, map[string]interface{}{
 			"status": "success",
-			"data": map[string]string{
+			"data": map[string]interface{}{
 				"message": "business created successfully",
+				"business": business,
 			},
 		})
 	}

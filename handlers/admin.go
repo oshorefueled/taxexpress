@@ -12,6 +12,7 @@ type adminHandler struct {
 
 func adminRoute (r chi.Router) {
 	m := messageHandler{}
+	r.Use(needTokenMiddleware)
 	r.Get("/all", m.getAllAdmins)
 }
 

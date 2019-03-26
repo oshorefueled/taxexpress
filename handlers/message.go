@@ -13,6 +13,7 @@ type messageHandler struct {
 
 func messageRoute (r chi.Router) {
 	m := messageHandler{}
+	r.Use(needTokenMiddleware)
 	r.Post("/", m.createMessage)
 	r.Get("/", m.getAllMessages)
 }

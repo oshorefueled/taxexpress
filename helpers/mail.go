@@ -10,14 +10,24 @@ import (
 
 type MailHelper struct {
 	SenderID string
-	ToIDs    []string
-	Subject  string
-	Body     string
+	ToIDs    []string `json:"to"`
+	Subject  string	`json:"subject"`
+	Body     string `json:"body"`
 }
 
 type SmtpServer struct {
 	host string
 	port string
+}
+
+type unencryptedAuth struct {
+	smtp.Auth
+}
+
+func (a unencryptedAuth) Start(server *smtp.ServerInfo) (string, []byte, error) {
+	s := *server
+	s.TLS = true
+	return a.Auth.Start(&s)
 }
 
 func (s *SmtpServer) ServerName() string {
@@ -38,15 +48,18 @@ func (mail *MailHelper) BuildMessage() string {
 }
 
 func (mail MailHelper) SendMail () error {
-	mail.SenderID = "admin@socialany.com"
+	mail.SenderID = "yournextwish@gmail.com"
+	fmt.Println("mail", mail)
 
 	messageBody := mail.BuildMessage()
 
-	smtpServer := SmtpServer{host: "smtp.zoho.com", port: "587"}
+	smtpServer := SmtpServer{host: "smtp.gmail.com", port: "465"}
 
 	log.Println(smtpServer.host)
 	//build an auth
-	auth := smtp.PlainAuth("", mail.SenderID, "bubble_28@#12", smtpServer.host)
+	auth := unencryptedAuth{
+		smtp.PlainAuth("", mail.SenderID, "thephantom28", smtpServer.host),
+	}
 
 	tlsconfig := &tls.Config{
 		InsecureSkipVerify: true,

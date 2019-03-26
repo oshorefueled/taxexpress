@@ -14,6 +14,7 @@ type taxHandler struct {
 
 func taxRoute (r chi.Router) {
 	t := taxHandler{}
+	r.Use(needTokenMiddleware)
 	r.Post("/revenue", t.updateTaxRevenue)
 	r.Post("/payment", t.updateTaxPayment)
 	r.Get("/paid", t.getAllPaidTaxes)

@@ -66,6 +66,15 @@ func (b *Business) GetBusinessById () (err error) {
 	return
 }
 
+func (b *Business) GetBusinessByEmail () (err error) {
+	sqlQuery := "SELECT * FROM businesses WHERE email=?"
+	result := db.QueryRow(sqlQuery, b.Email)
+	err = result.Scan(&b.Id, &b.Name, &b.RCNumber, &b.BusinessDescription, &b.Email,
+		&b.TotalRevenue, &b.TaxStatus, &b.CreatedAt, &b.UpdateAt)
+	return
+}
+
+
 func (b *Business) UpdateBusinessRevenue (revenue float64) (err error) {
 	err = b.GetBusinessById()
 	if err != nil {
