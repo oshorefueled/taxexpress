@@ -60,7 +60,6 @@ func (a *Admin) GetAdminByToken () (err error) {
 	sqlQuery := `SELECT username, email FROM admins WHERE token=?`
 	row := db.QueryRow(sqlQuery, a.Token)
 	err = row.Scan(&username, &email)
-	fmt.Println("username", a.Token)
 	a.Username = username
 	a.Email = email
 	if err != nil {
