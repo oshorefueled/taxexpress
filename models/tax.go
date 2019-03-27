@@ -107,7 +107,7 @@ func (t *Tax) GetTaxByDateAndId () (err error) {
 
 func (t Tax) GetTaxRecordById () (interface{}, error) {
 	var b Business
-	sqlQuery := "SELECT * FROM tax WHERE id=?"
+	sqlQuery := "SELECT * FROM tax WHERE business_id=?"
 	result := db.QueryRow(sqlQuery, t.Id)
 	err := result.Scan(&t.Id, &t.BusinessId, &t.TaxPeriod, &t.Revenue,
 		&t.TaxPaid, &t.DatePaid, &t.CreatedAt, &t.UpdateAt)
